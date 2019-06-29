@@ -9,6 +9,7 @@
 ### Numbers
 
 - Built-In numbers.
+
   | Type     | Bit Width |
   | ---      | ---       |
   | Double   | 64        |
@@ -19,6 +20,7 @@
   | Byte     | 8         |
 
 - Unsigned Integers (Experimental as of Kotlin 1.3)
+
   | Type | Bit Width | Range |
   | ---  | ---       | ---   |
   | kotlin.UByte| 8-bit | 0 to 255|
