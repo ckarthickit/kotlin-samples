@@ -1,5 +1,11 @@
 # Basics
 
+## Variables (Mutable and Immutable)
+
+- 2 keywords to declare a variable
+  - val (from value) - Immutable reference that cannot be reassigned after it's initialized. (corressponds to `final in Java`).
+  - var (from variable) - Mutable reference (corressponds to `non-final Java` variable)
+
 ## Types
 
 - `Everything is an object in Kotlin` (i.e., we can call `member functions` and `properties` on any variable).
@@ -18,6 +24,10 @@
   | Int      | 32        |
   | Short    | 16        |
   | Byte     | 8         |
+
+- Special type `Kotlin.Unit`
+  - The type with `ONLY ONE VALUE` - the `Unit Object`.
+  - corresponds to `void` type in Java.
 
 - Unsigned Integers (Experimental as of Kotlin 1.3)
 
@@ -56,7 +66,7 @@
   - `JVM`
     - by default stored as JVM primitive types.
     - When used in `nullable number reference (e.g. Int?)` or `generics`, they are `boxed`.
-    - `Boxing` DOES NOT preserve `identity` but preserves `equality`.
+    - `Boxing` DOES NOT preserve `identity`/`referential equality` but preserves `equality`.
 
       ```kotlin
         val a: Int = 10000
