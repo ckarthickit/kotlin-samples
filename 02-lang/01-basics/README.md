@@ -159,6 +159,17 @@
 
 - Array in Kotlin is invariant
   - `Array<String> cannot be assigned to Array<Any>.
+- Specialized Array classes for primitives (to eliminate boxing overhead)
+  - Primitive Arrays equivalent Classes:
+    - CharArray
+    - ByteArray
+    - ShortArray
+    - IntArray
+    - LongArray
+    - FloatArray
+    - DoubleArray
+  - These classes have `NO inheritance relation` to `Array` class but have same set of
+  methods and properties.
 
 ### Strings
 
