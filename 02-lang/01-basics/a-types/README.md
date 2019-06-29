@@ -12,6 +12,11 @@
 - Some types have special internal representation.
   - `numbers` , `characters` and `boolean` can be represented as primitive values `at run-time`.
 
+## kotlin.Unit
+- Special type `kotlin.Unit`
+  - The type with `ONLY ONE VALUE` - the `Unit Object`.
+  - corresponds to `void` type in Java.
+
 ### Numbers
 
 - Built-In numbers.
@@ -24,10 +29,6 @@
   | Int      | 32        |
   | Short    | 16        |
   | Byte     | 8         |
-
-- Special type `Kotlin.Unit`
-  - The type with `ONLY ONE VALUE` - the `Unit Object`.
-  - corresponds to `void` type in Java.
 
 - Unsigned Integers (Experimental as of Kotlin 1.3)
 
