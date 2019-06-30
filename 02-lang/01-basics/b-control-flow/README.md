@@ -64,3 +64,48 @@
 ## while , do..while loops
 
 - Same as other languages (like Java, C etc.,)
+
+## Returns and Jumps
+
+- Kotlin Structural Jumps
+  1. return. -> Returns from the nearest enclosing function.
+  2. break. -> Terminate the nearest enclosing loop.
+  3. continue. -> Proceed to the next iteration/step of the neares enclosing loop.
+
+### Break and Continue Labels
+
+- `Any Expression` is kotlin can be markes with a `label`.
+- Format is `identifier followed by @ sign` (E.g. abc@ , outerFor@, etc.,)
+  
+  ```kotlin
+    outer_loop@ for (i in 1..100) {
+      for (j in 1..100) {
+          if (...) break@outer_loop
+      }
+    }
+  ```
+
+### Return@ labels
+
+- `Functions can be nested in Kotlin` (function literals, local functions and object expression) and `hence return@lable`.
+
+  ```kotlin
+    fun foo() {
+      listOf(1, 2, 3, 4, 5).forEach {
+          if (it == 3) return // non-local return directly to the caller of foo()
+          print(it)
+      }
+      println("this point is unreachable")
+    }
+
+    //return@label returns the local function that is labelled
+    fun foo() {
+      listOf(1, 2, 3, 4, 5).forEach lit@{
+          if (it == 3) return@lit // local return to the caller of the lambda, i.e. the forEach loop
+          print(it)
+      }
+      print(" done with explicit label")
+    }
+  ```
+
+- There are other variations. Please refer [here](https://kotlinlang.org/docs/reference/returns.html).

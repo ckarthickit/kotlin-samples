@@ -13,6 +13,7 @@
   - `numbers` , `characters` and `boolean` can be represented as primitive values `at run-time`.
 
 ## kotlin.Unit
+
 - Special type `kotlin.Unit`
   - The type with `ONLY ONE VALUE` - the `Unit Object`.
   - corresponds to `void` type in Java.
@@ -236,3 +237,87 @@
     $9.99
     "*/
   ```
+
+## Other Opeartions/Operators
+
+### The !! Operator (not-null assertion opeartor)
+
+- Checks any value for `null` and throws `NullPointerException` if null
+
+  ```kotlin
+    val l = b!!.length //throws NPE if b is null
+    val anotherOb = b!! //throws NPE if b is null
+  ```
+
+### The ?. Operator (Safe Call Operator)
+
+- Performs a null check on a value before acessing it's properties or members. If the object is null , it `returns null`.
+
+  ```kotlin
+    val a = "Kotlin"
+    val b: String? = null
+    println(b?.length) //This returns b.length if b is not null, and null otherwise
+    println(a?.length) // Unnecessary safe call
+  ```
+
+- Very useful in chaining of calls.
+
+  ```kotlin
+    bob?.department?.head?.name
+  ```
+
+### The ?: Opeartor (Elvis Operator)
+
+- Used to specify an `alternate value` if a `nullable reference is null`
+
+  ```kotlin
+    val l: Int = if (b != null) b.length else -1 //normal statement.
+    //The above statement can be written using Elvis like below :
+    val l = b?.length ?: -1
+  ```
+
+### The :: Operator (Member Reference and Class Reference Operator)
+
+- Function references
+  - Can  pass functions to another function by prefixing them with `::` operator.
+
+    ```kotlin
+      fun isOdd(x: Int) = x % 2 != 0
+      val numbers = listOf(1, 2, 3)
+      println(numbers.filter(::isOdd)) // isOdd function is passed by references
+    ```
+
+  - If we need to use a `member of a class`, or `an extension function`, it needs to be `qualified`
+
+    ``` kotlin
+    val toCharArray = String::toCharArray
+    val isEmptyStringList: List<String>.() -> Boolean = List<String>::isEmpty //To have a function type with receiver instead, specify the type explicitly.
+    ```
+
+- Property References
+  - Acess properties as `first-class objects`. Refer to `KProperty` class in Kotlin
+
+    ```kotin
+    val x = 1
+
+    fun main() {
+        println(::x.get()) //::x evaluates to KProperty<Int>
+        println(::x.name)
+    }
+    ```
+
+- Constructor References
+  - Constructor can be references just like methods and properties.
+
+- Class References (::class)
+  - Access classes as `first-class objects` @runtime. Refer to `KClass` class in Kotlin.
+
+    ```kotlin
+      val c = MyClass::class // class literal syntax
+      val widget: Widget = GoodWidget()
+      println("widget classNam: ${widget::class.qualifiedName}") //Perform ::class on a object of a particular class.
+    ```
+
+## References
+
+- [Keyword References](https://kotlinlang.org/docs/reference/keyword-reference.html)
