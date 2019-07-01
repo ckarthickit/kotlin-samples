@@ -9,24 +9,25 @@
   3. class body -> sorrounded with curly braces.
 
   ```kotlin
-    class Person constructor(firstName: String) { ... }
+    class Person public @Inject constructor(firstName: String) { ... }
   ```
 
 ## Constructors
 
 - Kotlin class can have `a primary constructor` (__which cannot contain any code__) and one or more `secondary constructor`.
-- Intiailizer Blocks are prefixed with `init` keyword
-- Can have multiple initializer blocks. They are executed in the same order as they appear in class body.
+- Intiailizer Blocks
+  - prefixed with `init` keyword
+  - Can have multiple initializer blocks. They are executed in the same order as they appear in class body.
 
-  ```kotlin
-    class InitOrderDemo(name: String) {
-        val firstProperty = "First property: $name".also(::println)
-        init {
-            println("First initializer block that prints ${name}")
+    ```kotlin
+        class InitOrderDemo(name: String) {
+            val firstProperty = "First property: $name".also(::println)
+            init {
+                println("First initializer block that prints ${name}")
+            }
+            val secondProperty = "Second property: ${name.length}".also(::println)
+            init {
+                println("Second initializer block that prints ${name.length}")
+            }
         }
-        val secondProperty = "Second property: ${name.length}".also(::println)
-        init {
-            println("Second initializer block that prints ${name.length}")
-        }
-    }
-  ```
+    ```
