@@ -18,6 +18,26 @@
   - The type with `ONLY ONE VALUE` - the `Unit Object`.
   - corresponds to `void` type in Java.
 
+## class Nothing
+
+- Has `NO instances` => Used to represent `a value that never exist`.
+- A function that has return type `Nothing` never actually returns any value. (It runs forever in a loop (or) always throws exception).
+- Kotlin compiler complains of `unreachable code` if we put some code after invoking a `Nothing function`.
+- Another use-case of Nothing is below.
+
+  ```kotlin
+    fun reportError(): Nothing {
+        throw RuntimeException()
+    }
+    fun exampleThree(n: Int): String {
+        if (n > 5) {
+            return "Ok";
+        }
+        reportError(); // throws RuntimeException
+        // Compiles! (Won't complain about missing return as reportError is marked to return Nothing and never returns!)
+    }
+  ```
+
 ### Numbers
 
 - Built-In numbers.
