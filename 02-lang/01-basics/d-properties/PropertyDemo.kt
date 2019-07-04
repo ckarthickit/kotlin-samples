@@ -21,11 +21,14 @@ class MyTest {
         }
     }
 }
-/**************************************/
+/***********PROPERTY DELEGATE**********/
 class Person() {
     var name: String by NameDelegate()
 }
 class NameDelegate: Any() {
+    init {
+        println("created instance of ${this::class}")
+    }
     private val _propHolder : MutableMap<String,String> = HashMap()
     operator fun getValue(thisRef: Any?, prop: KProperty<*>): String {
         return "${prop.name}: ${_propHolder.get(prop.name)?:"no-data"}"
@@ -33,6 +36,10 @@ class NameDelegate: Any() {
     operator fun setValue(thisRef: Any?, prop: KProperty<*>, value: String): Unit {
         _propHolder[prop.name] = value
     }
+}
+operator fun NameDelegate.provideDelegate(thisRef: Any?, prop: KProperty<*>): NameDelegate {
+    println("provideDelegate is called for instance of ${this::class}")
+    return this;
 }
 /************LAZY PROPERTY DELEGATE*******************/
 class LazyClass {
