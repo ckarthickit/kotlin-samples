@@ -126,7 +126,8 @@
   - Storing properties in a map, instead of a separate field for each property.
 - Property Delegate objects must implement `setValue` and `getValue` __operator functions__.
   - `get` and `set` corresponding to a delegated property will be delegated to it's (object after `by`) getValue and setValue functions respectively.'
-  
+  - __The delegated property should not be initialized as they don't have a backing field in themselves. It is handled by delegate__.
+
   ```kotlin
     class Person() {
       var name: String by NameDelegate()
@@ -141,6 +142,41 @@
         }
     }
     ```
+
+- __Can declare local variables as delegated properties__.
+
+  ```kotlin
+    class Foo {
+        init {
+            println("new Foo")
+        }
+        fun doSomething() {
+            println("foo is doing something")
+        }
+    }
+    fun localPropertyWithDelegate(computeFoo: ()->Foo) {
+        val memoizedFoo by lazy(computeFoo)
+        memoizedFoo.doSomething(); //accessing memoizedFoo
+    }
+
+    fun localDelegatedPropTest() {
+        println("\n===== local-delegated-property-test====")
+        var _backingFoo : Foo? = null
+        val lateInitFoo = {
+            if(_backingFoo == null) _backingFoo = Foo()
+            _backingFoo as Foo
+        }
+        val alwasyNewFoo = {Foo()}
+
+        localPropertyWithDelegate(lateInitFoo)
+        localPropertyWithDelegate(lateInitFoo)
+        localPropertyWithDelegate(lateInitFoo)
+
+        localPropertyWithDelegate(alwasyNewFoo)
+        localPropertyWithDelegate(alwasyNewFoo)
+        localPropertyWithDelegate(alwasyNewFoo)
+    }
+  ```
 
 - __Standard Delegates__
   - `lazy()` function takes a `lambda arguement` and returns `instance of Lazy<T>` which serves as delegate for implementing a lazy propery.
@@ -158,3 +194,24 @@
         println(lazyValue)
     }
     ```
+
+  - `Delegates.observable` => a property delegate that calls a specified callback when changed
+  - `Delegates.vetoable` => a property delegate that calls a specified callback when changed, allowing the callback to __veto__ the modification.
+
+- __Map as a property delegate__
+  - `interface Map` provides `getValue` __operator extension function__ (because Map doesn't/needn't extend from `interface ReadOnlyProperty`).
+  - `interface MutableMap` provides both `getValue` and `setValue` __operator extension functions__ (because MutableMap doesn't/needn't extend from `interface ReadWriteProperty`).
+  - The underlying Map Delegate stores value for each property using the `name of the property as key`.
+  - E.g.,
+
+  ```kotlin
+    class User(val map: Map<String, Any?>) {
+        val name: String by map
+        val age: Int     by map
+    }
+    //usage , also note the use of `to` infix function
+    val user = User(mapOf(
+        "name" to "John Doe",
+        "age"  to 25
+    ))
+  ```
