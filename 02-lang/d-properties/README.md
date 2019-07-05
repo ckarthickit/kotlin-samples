@@ -257,4 +257,4 @@
 
 - __Use Cases:__
   - Check a `delegated property's consistency` when it is created.
-  - check the `delegating propery's name` __before binding__ to underlying datastructure of the Delegate.
+  - Check the `delegating propery's name` __before binding__ to underlying datastructure of the Delegate.
