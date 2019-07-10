@@ -21,3 +21,7 @@
   #info: kotlinc-jvm 1.3.40 (JRE 12.0.1+12)
   $
   ```
+
+## Kotlin Proposals
+
+- [Kotlin Evolution and Enhancement Process - KEEP](https://github.com/Kotlin/KEEP)
