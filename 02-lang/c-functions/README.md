@@ -178,3 +178,54 @@
   ```kotlin
     val caps = str.takeUnless { it.length() < 3 }?.toUpperCase()
   ```
+
+## Operator Overloading
+
+- done by:
+  1. Providing `member functions` or `extension functions` with a __fixed name__ and
+  2. Marking them with `operator` modifier.
+- Signatures are checked for proper compatibility. Eg:
+  - Unary operators on type `T` can have __any return value__ `R`.
+  - Increment operators (++, --) on type `T` should __return sub-type__ of `T`.
+- The `left-most` variable will be the `reciever` and all others will be `params` to reciever object's `operator function`.
+
+### Operator to function Mapping
+  
+- (Let `T` be type of __a__, `PT` be type of __b__, `IT` type of __i__ be and `R` be __return-type__)
+
+  | Operator Type | Operator | Function                           | Comments                       |
+  | ---           | :---:    | :---                               | :---                           |
+  | Unary         | +a       | operator fun unaryPlus(): R        |                                |
+  |               | -a       | operator fun unaryMinus(): R       |                                |
+  |               | !a       | operator fun not(): R              |                                |
+  |               | a++      | operator fun inc(): R              | <li>`R` should be sub-type of `T`. <li>__Shouldn't mutate the object on which it was invoked.__ <li>`Suffix-form` stores current value in temporary variable `a0` and assigns result of `a.inc()` to `a` then returns `a0` as result of `expression`.<li> `Prefix-form` assigns result of `a.inc()` to `a` then returns `a` as result of `expression`.  |
+  |               | a--      | operator fun dec(): R              | <li>`R` should be sub-type of `T`. <li>__Shouldn't mutate the object on which it was invoked.__ <li>`Suffix-form` stores current value in temporary variable `a0` and assigns result of `a.dec()` to `a` then returns `a0` as result of `expression`.<li> `Prefix-form` assigns result of `a.dec()` to `a` then returns `a` as result of `expression`.  |
+  | Binary        | a + b    | operator fun plus(other: PT): R       |                               |
+  | Binary        | a - b    | operator fun minus(other: PT): R      |                               |
+  | Binary        | a * b    | operator fun times(other: PT): R      |                               |
+  | Binary        | a / b    | operator fun div(other: PT): R        |                               |
+  | Binary        | a % b    | operator fun rem(other: PT): R        |                               |
+  | Binary        | a..b     | operator fun rangeTo(other: PT): R    |                               |
+  | Binary        | a in b   | operator fun contains(element: PT): R | `R` is usually `Boolean`<br> __Few standard library implementations:__ <li>operator fun <T> Array<out T>.contains(element: T): Boolean <li>operator fun <T> Iterable<T>.contains(element: T): Boolean <li> operator fun <K, V> Map<out K, V>.contains(key: K): Boolean <li>operator fun CharSequence.contains(other: CharSequence, ignoreCase: Boolean = false): Boolean|
+  | Binary        | a !in b   | operator fun contains(element: PT): R | Translates to `!b.contains(a)`|
+  | Index Access  | a[i]      | opeartor fun get(index: IT): R         |Translated to `a.get(i)`      |
+  | Index Access  | a[i_1, ..., i_n]      | opeartor fun get(i_1: IT1, ... , i_n: ITN): R |Translated to `a.get(i_1, ..., i_n)`      |
+  | Index Access  | a[i] = b   | operator fun set(index: IT, element: PT): PT | Translated to a.set(i, b) |
+  | ...           |  ...       | ...      | ... |
+  | Invoke Operator | a()      | operator fun invoke(): R | Translated to `a.invoke()` |
+  |                 | a(i)       | operator fun invoke(param: PT): R | Translated to `a.invoke(i)` |
+  | Augmented assignments | a += b | operator fun plusAssign(other: PT): R| a.plusAssign(b) |
+  | Augmented assignments | a -= b | | a.minusAssign(b) |
+  | Augmented assignments | a *= b | | a.timesAssign(b) |
+  | Augmented assignments | a /= b | | a.divAssign(b) |
+  | Augmented assignments | a %= b | | a.remAssign(b) |
+  | Equality Operator | a == b | operator fun equals(other: Any?): Boolean | Translated to `a?.equals(b) ?: (b === null)` |
+  | Inequality Operator | a != b | operator fun equals(other: Any?): Boolean | Translated to `!(a?.equals(b) ?: (b === null))` |
+  | Comparison          | a > b | operator fun compareTo(other: T): Int | Transaltes to `a.compareTo(b) > 0` |
+  | Comparison          | a < b | operator fun compareTo(other: T): Int | Transaltes to `a.compareTo(b) < 0` |
+  | Comparison          | a >= b | operator fun compareTo(other: T): Int | Transaltes to `a.compareTo(b) >= 0` |
+  | Comparison          | a <= b | operator fun compareTo(other: T): Int | Transaltes to `a.compareTo(b) <= 0` |
+  | Property Delegation | val `<property_name>`: `<Type>` by `<expression>` | operator fun getValue(thisRef: Any?, property: KProperty<*>): R | `getValue` is __Invoked when property is `read`__ |
+  | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) | `setValue` is __Invoked when property is `written` into__|
+  | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): R | `provideDelegate` is invoked on the Delegate object for `each delegating property` upon __creation of instance of the delegating property__.
+
