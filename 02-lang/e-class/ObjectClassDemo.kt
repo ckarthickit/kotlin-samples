@@ -58,7 +58,7 @@ fun mulipleSuperTypeDemo() {
     obj.printY()
     obj.printLocalVar()
 }
-/********************************/
+/*********SINGLETON CLASS OR OBJECT DECLARATION****************/
 data class Data(val x: Int, val y: Int)
 object DataManager {
     private var  data :List<Data> = ArrayList()
@@ -70,6 +70,26 @@ object DataManager {
         return this.data
     }
 }
+/************JAVA FUNCTIONAL INTERFACE USING "OBJECT EXPRESSION"  AND "LAMBDA"***************/
+class AnotherOuter {
+    val runnable1 = object: Runnable {
+        override fun run() {
+            println("I can access outer this: ${this@AnotherOuter::class}")
+            println("I have my own this: ${this::class}")
+        }
+    }
+    val runnable2 = Runnable {
+        println("I can access outer this: ${this@AnotherOuter::class}")
+        println("I done't have my own this: ${this::class}")
+    }
+}
+
+fun demoJavaSAM() {
+    val outer = AnotherOuter()
+    outer.runnable1.run()
+    outer.runnable2.run()
+}
+/********************************/
 
 fun main() {
     println("===== object-expression-demo ===")
@@ -81,4 +101,6 @@ fun main() {
     DataManager.registerData(Data(1,3))
     DataManager.registerData(Data(2,4))
     println("allRegisteredData: ${DataManager.getRegisteredData()}")
+    println("===== java-SAM-demo ===")
+    demoJavaSAM()
 }

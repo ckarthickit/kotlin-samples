@@ -190,7 +190,7 @@
         println("adHocClass.x= ${adHocClass.x}, adHocClass.y= ${adHocClass.y}")
     ```
 
-  - __Anonymous Objects__ can be used as types only in local and private declarations
+  - __Anonymous Objects__ `can be used as types only in local and private declarations`.
 
   ```kotlin
       class C {
@@ -211,6 +211,28 @@
       }
   ```
 
+  - `JAVA Singla Abstract Method` interfaces - Special Case
+    - Can be implemented as `a lambda` (or) `an object expression`.
+
+    ```kotlin
+      class AnotherOuter {
+          val runnable1 = object: Runnable {
+              override fun run() {
+                  //Below Prints class AnotherOuter
+                  println("I can access outer this: ${this@AnotherOuter::class}")
+                  //Below Prints class AnotherOuter$runnable1$1
+                  println("I have my own this: ${this::class}")
+              }
+          }
+          val runnable2 = Runnable {
+              //Below Prints class AnotherOuter
+              println("I can access outer this: ${this@AnotherOuter::class}")
+              //Below Prints class AnotherOuter, LAMBDA DOES NOT HAVE THIS
+              println("I done't have my own this: ${this::class}")
+          }
+      }
+    ```
+
 - `Singleton Class`
   - Declared using `object-declaration`.
   - Object declaration's __initialization is thread-safe__.
@@ -228,4 +250,4 @@
 
 ### Companion Class
 
-- __TO ADD.__
+- `objet-declaration` marked with `companion` keyword becomes __companion class__.
