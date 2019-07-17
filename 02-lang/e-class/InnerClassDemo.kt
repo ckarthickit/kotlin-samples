@@ -1,4 +1,5 @@
-package innerclass;
+package innerclass
+import SamInterface
 /*************NESTED STANDALONE CLASS***************/
 class Outer {
     val x = 1
@@ -32,7 +33,8 @@ class Bar(barX :Int = 10): Foo() {
     }
 }
 /********ANONYMOUS_INNER_CLASS***************/
-interface Runnable {
+@FunctionalInterface
+interface RunnableKt {
     fun run(): kotlin.Unit
 }
 /**********************************************/
@@ -45,16 +47,18 @@ fun main() {
     println("==========")
     println("Outer.Inner().method(): ${Outer.Inner().method()}")
     println("==========")
-    val runnable = object : Runnable {
+    val runnable = object : RunnableKt {
         override fun run() {
             println("Running anonymously")
         }
     }
     println("runnable run: ${runnable.run()}")
-    val anotherRunnable = Runnable {
+
+    val anotherRunnable = SamInterface {
         println("Running anonymously in lambda")
     }
-    println("anotherRunnable.run: ${anotherRunnable.run()}")
+    println("anotherRunnable.run: ${anotherRunnable.printMsg()}")
+
     val adHocClass = object {
         val x = 100;
         val y = 278;

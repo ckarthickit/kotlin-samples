@@ -119,38 +119,6 @@
   }
 ```
 
-### Nested & Inner class
-
-- `Nested Class` without `inner` specifier
-  - doesn't carry any reference to the object of outer class.
-- `Nested Class` with  `inner` specifier.
-  - Holds reference to object of outer class.
-  - Use `this@Outer` and `super@Outer` to refer to enclosing Outer class's `this` and `super` objects respectively.
-- `Anonymous Class`
-  - Declared using `object-expression`.
-
-  ```kotlin
-    interface Runnable {
-        fun run(): kotlin.Unit
-    }
-    //......... anonymous inner class extending Runnable
-    val runnable = object : Runnable {
-        override fun run() {
-            println("Running anonymously")
-        }
-    }
-    //....... anonymous inner class extending a Functional Interface
-    val anotherRunnable = Runnable {
-        println("Running anonymously in lambda")
-    }
-    //...... adHoc class not extending from anything
-    val adHocClass = object {
-        val x = 100;
-        val y = 278;
-    }
-    println("adHocClass.x= ${adHocClass.x}, adHocClass.y= ${adHocClass.y}")
-  ```
-
 ### Abstract class
 
 - `abstract` class is `open` by default.
@@ -162,6 +130,99 @@
 
     abstract class Derived : Base() {
         override abstract fun f()
+    }
+  ```
+
+### Nested & Inner class
+
+- `Nested Class` without `inner` specifier
+  - doesn't carry any reference to the object of outer class.
+- `Nested Class` with  `inner` specifier.
+  - Holds reference to object of outer class.
+  - Use `this@Outer` and `super@Outer` to refer to enclosing Outer class's `this` and `super` objects respectively.
+- `Anonymous Class`
+  - Declared using `object-expression`.
+  - Code in object-expression __can access variables from enclosing scope__(even non-final variables).
+
+  ```kotlin
+    interface RunnableKt {
+        fun run(): kotlin.Unit
+    }
+    //......... anonymous inner class extending Runnable
+    val runnable = object : RunnableKt {
+        override fun run() {
+            println("Running anonymously")
+        }
+    }
+
+    //....... anonymous inner class extending a `JAVA FUNCTIONAL INTERFACE`
+    // For every JAVA FUNCTIONAL INTERFACE, there is probably a function created
+    // with the same name as that of the Interface which accepts a lambda with the same
+    // type signature as that of the Function inside that interface.
+    // Hence it doesn't have access to the enclosing "this"
+    val anotherRunnable = Runnable {
+        println("Running anonymously in lambda")
+    }
+  ```
+
+  - If __super-type__ has constructor  appropriate constructor params must be passed.
+
+    ```kotlin
+      open class A(x: Int) {
+          public open val y: Int = x
+      }
+
+      interface B { ... }
+
+      val ab: A = object : A(1), B {
+          override val y = 15
+      }
+    ```
+
+  - `Anonymous Objects` (or) Objects with no non-trivial super-types
+
+    ```kotlin
+        //...... adHoc class not extending from anything
+        val adHocClass = object {
+            val x = 100;
+            val y = 278;
+        }
+        println("adHocClass.x= ${adHocClass.x}, adHocClass.y= ${adHocClass.y}")
+    ```
+
+  - __Anonymous Objects__ can be used as types only in local and private declarations
+
+  ```kotlin
+      class C {
+          // Private function, so the return type is the anonymous object type
+          private fun foo() = object {
+              val x: String = "x"
+          }
+
+          // Public function, so the return type is Any
+          fun publicFoo() = object {
+              val x: String = "x"
+          }
+
+          fun bar() {
+              val x1 = foo().x        // Works
+              val x2 = publicFoo().x  // ERROR: Unresolved reference 'x'
+          }
+      }
+  ```
+
+- `Singleton Class`
+  - Declared using `object-declaration`.
+  - Object declaration's __initialization is thread-safe__.
+  
+  ```kotlin
+    object DataProviderManager {
+      fun registerDataProvider(provider: DataProvider) {
+          // ...
+      }
+
+      val allDataProviders: Collection<DataProvider>
+          get() = // ...
     }
   ```
 
