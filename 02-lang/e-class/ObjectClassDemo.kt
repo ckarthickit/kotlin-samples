@@ -59,6 +59,17 @@ fun mulipleSuperTypeDemo() {
     obj.printLocalVar()
 }
 /********************************/
+data class Data(val x: Int, val y: Int)
+object DataManager {
+    private var  data :List<Data> = ArrayList()
+    fun registerData(data: Data) {
+        this.data += data
+    }
+
+    fun getRegisteredData(): List<Data> {
+        return this.data
+    }
+}
 
 fun main() {
     println("===== object-expression-demo ===")
@@ -66,4 +77,8 @@ fun main() {
     outerObj.printName()
     println("===== multiple-super-type-demo ===")
     mulipleSuperTypeDemo()
+    println("===== object-class-demo ===")
+    DataManager.registerData(Data(1,3))
+    DataManager.registerData(Data(2,4))
+    println("allRegisteredData: ${DataManager.getRegisteredData()}")
 }
