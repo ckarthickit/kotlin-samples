@@ -229,6 +229,7 @@
   | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) | `setValue` is __Invoked when property is `written` into__|
   | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): R | `provideDelegate` is invoked on the Delegate object for `each delegating property` upon __creation of instance of the delegating property__.|
   | Object Destructuring | val/var (<val1,val2,..valN>) = `<object>` | operator fun componentN():PTN | Destructures an Object into local variables |
+  | Iteration | for(`T` in `<object>`) | operator fun `<T>` iterator(): Iterator`<T>` | Used for Iteration in for loop |
 
 ## Component Functions
 
