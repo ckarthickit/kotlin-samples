@@ -488,8 +488,77 @@ fun factoryUsingCompanionDemo() {
 
 ### Sealed Classes
 
-- TODO
+- Used for representing __restricted class hierarchies__.
+- Sealed class
+  - is `abstract` by itself.
+  - cannot have non-private constructors. (`private` by default)
+  - it's `sub-classes` (__direct inheritors__) must be declared in the same file as the sealed class itself.
+    - classes which `extend sub-classes of sealed classes` (__indirect inheritors__) can be placed anywhere. (not necessarily in same file)
+  - Often used with `when expressions` to exhaust all cases without `else` clause.
+
+  ```kotlin
+    sealed class Expr
+    data class Const(val number: Double) : Expr()
+    data class Sum(val e1: Expr, val e2: Expr) : Expr()
+    object NotANumber : Expr()
+  ```
 
 ### Enum Classes
 
-- TODO
+- Used for implementing `type-safe` __enums__.
+- Each enum constant is an object.
+- Enum classes __may implement an interface__ (but do not derive from a class).
+
+  ```kotlin
+    enum class IntArithmetics : BinaryOperator<Int>, IntBinaryOperator {
+        PLUS {
+            override fun apply(t: Int, u: Int): Int = t + u
+        },
+        TIMES {
+            override fun apply(t: Int, u: Int): Int = t * u
+        };
+
+        override fun applyAsInt(t: Int, u: Int) = apply(t, u)
+    }
+  ```
+  
+  - Common Methods & Properties of an enum class `EnumClass`
+    - `EnumClass.valueOf(value: String): EnumClass`
+    - `EnumClass.values(): Array<EnumClass>`
+    - `val name: String` -> property to return the name of the Enum Constant.
+    - `val ordinal: Int` -> property to return the ordinal of the Enum Constant.
+    - EnumClass constants also __implement `Comparable` interface__, with natural order being the order in which they are declared.
+
+### TypeAlias
+
+- Provides alternative name for existing types.
+- UseCases
+  - Shorten long generic types
+
+    ```kotlin
+        typealias NodeSet = Set<Network.Node>
+    ```
+
+  - Name Function Types
+
+    ```kotlin
+        typealias Predicate<T> = (T) -> Boolean
+        typealias MyHandler = (Int, String, Any) -> Unit
+
+        //Usage
+        fun foo(p: Predicate<Int>) = p(42)
+    ```
+
+  - New Names for nested and inner classes
+
+     ```kotlin
+        class A {
+            inner class Inner
+        }
+        class B {
+            inner class Inner
+        }
+
+        typealias AInner = A.Inner
+        typealias BInner = B.Inner
+     ```
