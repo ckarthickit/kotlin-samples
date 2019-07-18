@@ -2,6 +2,35 @@
 
 - Declared using `fun` keyword.
 
+## Function Invocation
+
+- Value of a function can be invoked using 2 ways:
+  1. `f.invoke(x)` -> using `invoke() operator`.
+  2. `f(x)`.
+
+  ```kotlin
+  //operator fun plus(other: Any?): String -> String::plus signature
+  val stringPlus: (String, String) -> String = String::plus
+  val stringPlusReciever : (String).(String) -> String = String::plus
+
+  println(stringPlus.invoke("<-", "->")) //The left operand becomes the reciever here
+  println(stringPlus("Hello, ", "world!"))//The left operand becomes the reciever here
+  println("Hello, ".stringPlusReciever("world!")) //The left operand is the explicit reciever
+  ```
+
+## Function Types with Reciever
+
+- Function Types of Form `(A).B -> C`
+- Inside the body of the function literal, `the receiver object passed to a call becomes an implicit this`
+  
+  ```kotlin
+   val sumLambda: Int.(Int) -> Int = { other -> this.plus(other) } //function literal with reciever
+   val sum = fun Int.(other: Int): Int = this + other //anonymous function syntax
+
+   println("5.sumLambda(3) is ${5.sumLambda(3)}") //prints "5.sumLambda(3) is 8"
+   println("4.sum(3) is ${4.sum(3)}") //prints "4.sum(3) is 7"
+  ```
+
 ## Function Parameters
 
 - Defined using `pascal notation` i.e.,__(name: Type)__.
@@ -108,6 +137,9 @@
   - Arithmetic operators (+ , - , * , /)
   - Type Casts (obj as Set<*>)
   - rangeTo operator
+
+- __Standard Infix Functions__
+  - `infix fun <A, B> A.to(that: B): Pair<A, B>` - Creates a tuple of type `Pair`
 
 ## Local Functions
 
@@ -267,3 +299,35 @@
          println("animalName is $animalName, animalAge is $animalAge")//prints "animalName is Leopard, animalAge is 30"
       }
   ```
+
+## Closures
+
+Entities that can access it's closure (i.e., access variables declared in it's outer scope) are
+
+1. A Lambda Expression.
+2. Anonymous Function.
+3. Local Function.
+4. Object expression.
+
+## Function Literals With Receiever
+
+- Take the Form `A.(B) -> C`.
+- Can be percieved as `Extension Function Literals`.
+- Use-Cases :
+  - Used in building __type-safe builders__.
+
+    ```kotlin
+      class HTML {
+         fun body() { //... }
+      }
+
+      fun html(init: HTML.() -> Unit): HTML {
+         val html = HTML()  // create the receiver object
+         html.init()        // pass the receiver object to the init-lambda
+         return html
+      }
+
+      html {       // lambda with receiver begins here
+         body()   // calling a method on the receiver object
+      }
+    ```
