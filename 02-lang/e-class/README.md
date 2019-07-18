@@ -167,6 +167,7 @@
   - Their behaviour can __ONLY BE DEFINED__ by providing __EXPLICIT GETTERS AND SETTERS__.
 
 - `Companion Objects` are basically classes and can have extensions.
+  - Initialized at the `static block` of the containing class.
 
   ```kotlin
     class MyClass {
@@ -493,6 +494,7 @@ fun factoryUsingCompanionDemo() {
   - is `abstract` by itself.
   - cannot have non-private constructors. (`private` by default)
   - it's `sub-classes` (__direct inheritors__) must be declared in the same file as the sealed class itself.
+    - __Kotlin will be able to know all the sub-classes of Sealed class at compile time__
     - classes which `extend sub-classes of sealed classes` (__indirect inheritors__) can be placed anywhere. (not necessarily in same file)
   - Often used with `when expressions` to exhaust all cases without `else` clause.
 

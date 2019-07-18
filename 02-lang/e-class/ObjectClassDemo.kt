@@ -89,6 +89,21 @@ fun demoJavaSAM() {
     outer.runnable1.run()
     outer.runnable2.run()
 }
+/**********CONST DEMO*************/
+// class Constants {
+//     const val CONSTANT = ""
+// }
+
+object Constants {
+    const val CONSTANT = "SOMEVALUE"
+}
+
+class MyClass {
+    companion object {
+        const val CONSTANT = "SOMEVALUE"
+    }
+}
+
 /********************************/
 
 fun main() {

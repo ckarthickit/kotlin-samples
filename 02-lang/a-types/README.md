@@ -338,6 +338,29 @@
       println("widget classNam: ${widget::class.qualifiedName}") //Perform ::class on a object of a particular class.
     ```
 
+## Constants
+
+- Resolved at compile-time
+  
+  ```kotlin
+     //Regular classes cannot have constants.
+    // class Constants {
+    //     const val CONSTANT = ""
+    // }
+
+    //Object class can have Constants (They are singleton)
+    object Constants {
+        const val CONSTANT = "SOMEVALUE"
+    }
+
+    //Companion object of a class can contain constants as well.
+    class MyClass {
+        companion object {
+            const val CONSTANT = "SOMEVALUE"
+        }
+    }
+  ```
+
 ## References
 
 - [Keyword References](https://kotlinlang.org/docs/reference/keyword-reference.html)
