@@ -119,6 +119,192 @@
   }
 ```
 
+### Extension Functions & Properties
+
+- Ability to `add new functionality to class` without inheriting the class (or) use any design pattern such as `Decorator`.
+
+- Motivation
+  - In Java, we are used to classes named "*Utils" (FileUtils, ClassUtils etc.,)
+  
+    ```java
+    Collections.swap(list, Collections.binarySearch(list,
+        Collections.max(otherList)),
+        Collections.max(list));
+    ```
+
+  - In  Kotlin using extensions,
+
+    ```kotlin
+      list.swap(list, binarySearch(list, max(otherList)), max(list));
+    ```
+
+- __The reciever is resolved statically__.
+  
+  ```kotlin
+    open class C
+
+    class D: C()
+
+    fun C.foo() = "c"
+
+    fun D.foo() = "d"
+
+    fun printFoo(c: C) {
+        println(c.foo())
+    }
+
+    printFoo(D()) // Prints only "c" as "foo's reciever is resolved statically as "class C" as printFoo accepts type "C"
+  ```
+
+- `Extensions properties` can neither be initialized nor have backing field.
+  - __DO NOT INSERT NEW MEMBERS INTO CLASSES__.
+
+    ```kotlin
+      class Foo
+      val Foo.bar = 1 // error: initializers are not allowed for extension properties
+    ```
+
+  - Their behaviour can __ONLY BE DEFINED__ by providing __EXPLICIT GETTERS AND SETTERS__.
+
+- `Companion Objects` are basically classes and can have extensions.
+
+  ```kotlin
+    class MyClass {
+        companion object { }  // will be called "Companion"
+    }
+
+    fun MyClass.Companion.foo() { ... }  
+  ```
+
+- To use Top-Level extension outside its declaring package, we need to import it at the call site
+
+  ```kotlin
+    //one package
+    package foo.bar
+    fun Baz.goo() { ... }
+
+    // somewhere in another package
+    package com.example.usage
+
+    import foo.bar.goo // importing all extensions by name "goo"
+                      // or
+    import foo.bar.*   // importing everything from "foo.bar"
+
+    fun usage(baz: Baz) {
+        baz.goo()
+    }
+  ```
+
+#### Extensions as Members
+
+- We can declare extension of another class inside a class.
+- `Implicit Recievers`:
+  - `Dispatch Reciever` -> instance of the class in which extension is declared.
+  - `Extension Reciever` -> instance of __reciever-type__ of extension method.
+  - Conflict Resolution:
+
+    ```kotlin
+      class C {
+          fun D.foo() {
+              toString()         // calls D.toString()
+              this@C.toString()  // calls C.toString()
+          }
+      }
+    ```
+
+- Dispatch of Extension functions which are members of another class is `virtual with regard to dispatch reciever`, but `static with regard to extension reciever`.
+
+### Visibility Modifiers
+
+1. private
+    - visible __inside the file__ containing the declaration.
+2. protected
+    - Not available for top-level declarations.
+3. internal
+    - visible __everywhere in__ the same __module__.
+4. public
+    - The `default` visibility if no explicit modifier is mentioned.
+
+- Local Declarations
+  - Local variables, Local functions and Local classes __can not have__ visibility modifiers.
+
+- Eg.,
+
+  ```kotlin
+    open class Outer {
+        private val a = 1
+        protected open val b = 2
+        internal val c = 3
+        val d = 4  // public by default
+        var e = 10
+        get() {
+            return field
+        }
+        private set(value: Int){
+            field = value
+        }
+        /******************/
+        open fun mutateE() {
+            e = 20; //can access setter inside class
+        }
+
+        open protected class Nested {
+            public val e: Int = 5
+        }
+    }
+
+    class Subclass : Outer() {
+        // a is not visible
+        // b, c and d are visible
+        // Nested and e are visible
+
+        override val b = 5   // 'b' is protected
+
+        override fun mutateE() {
+            //e = 30; // error setter is invisible as it is private in super
+        }
+        protected class SubNested: Nested()
+    }
+
+    class Unrelated(o: Outer) {
+        //protected class UnrelatedNested: Nested() //compilation Error
+        // o.a, o.b are not visible
+        // o.c and o.d are visible (same module)
+        // Outer.Nested is not visible, and Nested::e is not visible either
+    }
+  ```
+
+- we have to use `explicit constructor keyword for primary` if we want to add visibility modifier to it.
+
+  ```kotlin
+    open class PrivateConstruct private constructor(val a: Int) {
+
+        private constructor():this(0){
+
+        }
+        companion object Factory{
+            fun create(a: Int): PrivateConstruct {
+                return PrivateConstruct(a)
+            }
+            fun create(): PrivateConstruct {
+                return PrivateConstruct()
+            }
+        }
+    }
+
+    //class SubPrivateConstruct: PrivateConstruct(10) //can't access as it has private primary constructor
+
+    fun main(){
+        var privateConstructObj = PrivateConstruct.create()
+        println("privateConstructObj.a is ${privateConstructObj.a}")
+        privateConstructObj = PrivateConstruct.create(20)
+        println("privateConstructObj.a is ${privateConstructObj.a}")
+    }
+  ```
+
+- __What qualified as a Module?__
+  - A set of Kotlin Files compiled together. (a set of files compiled with one invocation of the `kotlinc`)
+
 ### Abstract class
 
 - `abstract` class is `open` by default.
@@ -283,3 +469,27 @@ fun factoryUsingCompanionDemo() {
     println("MyClass2()= $a, MyClass2.Named= $b, MyClass2=$c")
 }
 ```
+
+### Data Classes
+
+- Classes whose main purpose is to hold data (Model Classes)
+
+  ```kotlin
+    data class User(val name: String, val age: Int)
+  ```
+
+- Cannot be `abstract` , `open` , `sealed` or `inner`.
+
+- Auto-Generates the following for properties declared in __primary constructor__.
+  - `equals()`/ `hashCode()` pair
+  - `toString()` of the form `<Class(prop1=val1, prop1=val1)>`
+  - `componentN()` functions
+  - `copy()` function
+
+### Sealed Classes
+
+- TODO
+
+### Enum Classes
+
+- TODO

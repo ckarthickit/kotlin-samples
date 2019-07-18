@@ -1,9 +1,11 @@
 # Properties
 
-- A `class entity` that has:
-  1. Backing Field (`field`)
+- An `entity` that has:
+  1. Backing Field (`field`) - (__optional__, there are computed and delegated properties)
   2. getter (if it's a `val` (or) `var`)
   3. setter (if it's a `var`)
+- Can be declared `top-level` (Outside of any class)
+- __Local variables__ (eventhough they are marked with `var` and `val`) are __NOT properties__.
 
 ## Grammar
 

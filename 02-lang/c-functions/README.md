@@ -227,5 +227,42 @@
   | Comparison          | a <= b | operator fun compareTo(other: T): Int | Transaltes to `a.compareTo(b) <= 0` |
   | Property Delegation | val `<property_name>`: `<Type>` by `<expression>` | operator fun getValue(thisRef: Any?, property: KProperty<*>): R | `getValue` is __Invoked when property is `read`__ |
   | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) | `setValue` is __Invoked when property is `written` into__|
-  | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): R | `provideDelegate` is invoked on the Delegate object for `each delegating property` upon __creation of instance of the delegating property__.
+  | Property Delegation | var `<property_name>`: `<Type>` by `<expression>` | operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): R | `provideDelegate` is invoked on the Delegate object for `each delegating property` upon __creation of instance of the delegating property__.|
+  | Object Destructuring | val/var (<val1,val2,..valN>) = `<object>` | operator fun componentN():PTN | Destructures an Object into local variables |
 
+## Component Functions
+
+- Used for Destructoring an Object of a Class.
+
+  ```kotlin
+      class Name(firstNameVal:String, secondNameVal:String, ageVal: Int){
+         val firstName: String = firstNameVal
+         val secondName: String = secondNameVal
+         val age : Int = ageVal
+
+         operator fun component1(): String {
+            return firstName;
+         }
+         operator fun component2(): String {
+            return secondName;
+         }
+         operator fun component3(): Int {
+            return age;
+         }
+      }
+      class Animal(val breed: String, val age: Int)
+      operator fun Animal.component1(): String {
+         return breed
+      }
+      operator fun Animal.component2(): Int {
+         return age
+      }
+
+      fun main(){
+         val (personFName , personSName , personAge) = Name("Johnny","Walker",50);
+         println("personFName is $personFName, personSName is $personSName, personAge is $personAge")//prints "personFName is Johnny, personSName is Walker, personAge is 50"
+
+         val (animalName, animalAge) = Animal("Leopard", 30)
+         println("animalName is $animalName, animalAge is $animalAge")//prints "animalName is Leopard, animalAge is 30"
+      }
+  ```
