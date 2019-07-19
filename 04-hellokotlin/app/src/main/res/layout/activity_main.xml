@@ -7,11 +7,17 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <TextView
-            android:id="@+id/roll_msg"
+    <!--
+        The app:srcCompat attribute uses the Android X library to support vector drawables in older versions of Android,
+        back to API level 7.
+    -->
+    <ImageView
+            android:id="@+id/roll_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/roll_the_dice"
+            android:contentDescription="@string/roll_the_dice"
+            app:srcCompat="@drawable/empty_dice"
+            tools:src="@drawable/dice_1"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
     />
@@ -20,8 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/roll"
-            app:layout_constraintTop_toBottomOf="@+id/roll_msg"
-            app:layout_constraintStart_toStartOf="@+id/roll_msg"
-            app:layout_constraintEnd_toEndOf="@+id/roll_msg"/>
+            app:layout_constraintTop_toBottomOf="@+id/roll_result"
+            app:layout_constraintStart_toStartOf="@+id/roll_result"
+            app:layout_constraintEnd_toEndOf="@+id/roll_result"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
