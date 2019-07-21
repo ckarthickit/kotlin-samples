@@ -3,5 +3,5 @@ out/
 *.iml
 
 # Gradle 
-/.gradle/
+.gradle
 /build/
