@@ -11,7 +11,7 @@ fun main() {
 }
 
 fun launchAJob() {
-    runBlocking(EmptyCoroutineContext + CoroutineName("Launch")) {
+    runBlocking(EmptyCoroutineContext + CoroutineName("run_blocking")) {
         println("Start (${coroutineContext[CoroutineName.KEY]}")
         val job = GlobalScope.launch( EmptyCoroutineContext + CoroutineName("global_launch")) {
             delay(500)
@@ -23,7 +23,7 @@ fun launchAJob() {
 }
 
 fun launchUsingCoroutinePrimitive() {
-    runAsCoroutine {
+    runAsCoroutine (EmptyCoroutineContext + CoroutineName("runAsCoroutine")) {
         println("primitive_start (${coroutineContext[CoroutineName.KEY]}")
         customDelay(2000)
         println("primitive_stop (${coroutineContext[CoroutineName.KEY]})")

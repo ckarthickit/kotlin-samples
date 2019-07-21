@@ -20,10 +20,10 @@ data class CoroutineName(val name: String) : CoroutineContext.Element {
  * Primitive to start a co-routine
  * Note that startCoroutine is done by creating a new Continuation object that has a context.
  */
-fun runAsCoroutine(block: suspend () -> Unit) {
+fun runAsCoroutine(context: CoroutineContext = EmptyCoroutineContext, block: suspend () -> Unit) {
     block.startCoroutine(object : Continuation<Unit> {
         override val context: CoroutineContext
-            get() = EmptyCoroutineContext + CoroutineName("runAsCoroutine")
+            get() = context
 
         override fun resumeWith(result: Result<Unit>) {
             println("async resumedWith: ${result.exceptionOrNull()}")
