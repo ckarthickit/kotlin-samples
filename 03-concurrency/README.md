@@ -19,6 +19,8 @@
   | Switching between co-routines need not involve any system calls or blocking calls<br> They `yield` to another co-routine. | Switching between threads usuaylly involves __system calls__ and might __block__|
   | No synchronization primitives needed?? | Synchronization primitives such as mutex, semaphores are needed|
 
+---
+
 ## Kotlin Coroutines Building Blocks
 
 - `Coroutine Scope` -> every __builder__ is an __extension on CoroutineScope__.
@@ -104,7 +106,7 @@
     6. `DispatchedCoroutine` -> created by `withContext` __suspend__ function if the `ContinuationInterceptor` of new context is different from the old context.
     7. `LazyStandaloneCoroutine` etc.,
 
-- `Scope Builders`
+- `Scope Builders` - A way to __Structured-Concurreny__.
   - Every __coroutine builder__, adds an instance of CoroutineScope to the scope of its code block.
   - An outer coroutine __does not complete until all the coroutines launched in its scope complete__.(No need for explicit `join`).
   - Few Scope Builders...
@@ -113,6 +115,39 @@
         - The provided scope inherits its coroutineContext from the outer scope, but overrides the context’s Job.
     3. [supervisorScope][supervisor_scope] -> A failure of a child does not cause this scope to fail and does not affect its other children.
         - The provided scope inherits its coroutineContext from the outer scope, but overrides context’s Job with SupervisorJob.
+
+---
+
+## Extracting functionality into Suspending Functions
+
+Functionality inside a coroutine can be `extracted into a seperate suspend function`.
+>If the __extracted suspend function__ `contains a coroutine builder which is launched in the current scope`, we need to pass scope explicity (or) implicitly as per requirement.
+
+Options to make CorotuineScope available for suspend functions :
+
+- Make __CoroutineScope__ a field in the class containing the suspend function.
+- Make the oute class implement  __CoroutineScope__ (recommended way is by delegation).
+- Make the __suspend function__ an Extension function on __CoroutineScope__.
+- As a last resort `fun CoroutineScope(context: CoroutineContext)` can be used to create a scope.
+
+> `CoroutineScope` should be implemented (or used as a field) on __entities with a well-defined lifecycle__ that are responsible for launching children coroutines. Example of such entity on Android is Activity.
+
+  ```kotlin
+    class MyActivity : AppCompatActivity(), CoroutineScope by MainScope() {
+        override fun onDestroy() {
+            cancel() // cancel is extension on CoroutineScope
+        }
+
+        /*
+        * Note how coroutine builders are scoped: if activity is destroyed or any of the launched coroutines
+        * in this method throws an exception, then all nested coroutines are cancelled.
+        */
+            fun showSomeData() = launch { // <- extension on current activity, launched in the main thread
+            // ... here we can use suspending functions or coroutine builders with other dispatchers
+            draw(data) // draw in the main thread
+            }
+        }
+  ```
 
 ---
 
