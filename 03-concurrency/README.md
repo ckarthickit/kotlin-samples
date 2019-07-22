@@ -41,11 +41,23 @@
     }
   ```
 
-- `Coroutine builders` -> Bridge between `non-coroutine` and `co-routine` worlds.
+  - Application code usually __should use an application-defined `[CoroutineScope]`__. Using [async][CoroutineScope.async] or [launch][CoroutineScope.launch] on the instance of `[GlobalScope]` is ___highly discouraged__.
+
+- `Coroutine builders` ([source][coroutine_builders]) -> Bridge between `non-coroutine` and `co-routine` worlds.
+  - [CoroutineScope.launch][launch] -> Returns a [Job][job]
+  - [CoroutineScope.async][async] -> Returns [Deferred<T>][deferred]
 - `Coroutine Context` -> Persistent context for the coroutine. It is an indexed __set of__ `[Element]` instances, each of which has a unique `[Key]`
   - Coroutine Context `[Element]`s:
     - Job
-    - CoroutineDispatcher
+    - CoroutineDispatcher ([Dispatchers][Dispatchers])
+      - `Dispatchers.Default` - backed by a shared pool of threads on JVM.
+      - `Dispatchers.Main` - a dispatcher confined to main thread operating on UI Objects
+      - `Dispatchers.Unconfined` - not confined to any specific thread.
+    - CoroutineExceptionHandler
+    - ContinuationInterceptor
+      - intercepts coroutine continuations
+      - has `interceptContinuation` method that returns continuation that wraps the original `[continuation]`, thus intercepting all resumptions.
+    - CoroutineName
 - `Continuation` -> represents continutation after a suspension point.
   
   ```kotlin
@@ -68,3 +80,13 @@
 ## References
 
 - [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+
+---
+[CoroutineScope.async]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/async.html]
+[CoroutineScope.launch]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html]
+[Dispatchers]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/index.html]
+[coroutine_builders]: [https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/common/src/Builders.common.kt]
+[launch]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html]
+[async]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/async.html]
+[job]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html]
+[deferred]: [https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-deferred/index.html]
