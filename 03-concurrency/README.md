@@ -17,7 +17,7 @@
   | ---       | ---    |
   | Cooperatively multi-tasked | Preemptively multi-taskes |
   | Switching between co-routines need not involve any system calls or blocking calls<br> They `yield` to another co-routine. | Switching between threads usuaylly involves __system calls__ and might __block__|
-  | No synchronization primitives needed | Synchronization primitives such as mutex, semaphores are needed|
+  | No synchronization primitives needed?? | Synchronization primitives such as mutex, semaphores are needed|
 
 ## Kotlin Coroutines Building Blocks
 
@@ -45,7 +45,10 @@
 
 - `Coroutine builders` ([source][coroutine_builders]) -> Bridge between `non-coroutine` and `co-routine` worlds.
   - [CoroutineScope.launch][launch] -> Returns a [Job][job]
-  - [CoroutineScope.async][async] -> Returns [Deferred<T>][deferred]
+  - [CoroutineScope.async][async] -> Returns [`Deferred<T>`][deferred]
+  - [CoroutineScope.produce][produce] -> Returns [ReceiveChannel][recieve_channel]
+  - [CoroutineScope.actor][actor] -> Returns [SendChannel][send_channel]
+  - [CoroutineScope.broadcast][broadcast] -> Returns [BroadcastChannel][broadcast_channel]
 - `Coroutine Context` -> Persistent context for the coroutine. It is an indexed __set of__ `[Element]` instances, each of which has a unique `[Key]`
   - Coroutine Context `[Element]`s:
     - Job
@@ -75,6 +78,23 @@
     }
   ```
 
+- `AbstractCoroutine` -> Abstract base class for implementation of coroutines in coroutine builders
+
+    ```kotlin
+        public abstract class AbstractCoroutine<in T>(
+            /**
+            * The context of the parent coroutine.
+            */
+            @JvmField
+            protected val parentContext: CoroutineContext,
+            active: Boolean = true
+        ) : JobSupport(active), Job, Continuation<T>, CoroutineScope{
+            //...
+        }
+    ```
+
+  - Known sub-classes -> `BlockingCoroutine<T>` , `StandaloneCoroutine`, `LazyStandaloneCoroutine` etc.,
+
 ---
 
 ## References
@@ -88,5 +108,11 @@
 [coroutine_builders]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/common/src/Builders.common.kt
 [launch]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/launch.html
 [async]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/async.html
+[produce]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/produce.html
+[actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
+[broadcast]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/broadcast.html
 [job]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-job/index.html
 [deferred]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-deferred/index.html
+[recieve_channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
+[send_channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-send-channel/index.html
+[broadcast_channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-broadcast-channel/index.html
