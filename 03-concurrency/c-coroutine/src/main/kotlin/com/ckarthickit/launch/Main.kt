@@ -28,8 +28,10 @@ fun launchAJob() {
 
 fun launchUsingCoroutinePrimitive() {
     runAsCoroutine(EmptyCoroutineContext + CoroutineName("runAsCoroutine")) {
-        println("primitive_start (${coroutineContext[CoroutineName.KEY]}")
+        println("primitive_start (${coroutineContext[CoroutineName.KEY]})")
+        println("suspend_in_thread = ${Thread.currentThread().id} (${coroutineContext[CoroutineName.KEY]})")
         customDelay(2000)
+        println("resume_in_thread ${Thread.currentThread().id} (${coroutineContext[CoroutineName.KEY]})")
         println("primitive_stop (${coroutineContext[CoroutineName.KEY]})")
     }
 }
