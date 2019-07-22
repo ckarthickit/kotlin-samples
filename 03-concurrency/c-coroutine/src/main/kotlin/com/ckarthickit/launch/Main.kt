@@ -22,6 +22,8 @@ fun launchAJob() {
         joinAll(job)
         println("Stop (${coroutineContext[CoroutineName.KEY]}")
     }
+    //control won't reach here until the co-routine completes
+    println("launchAJob-method control won't reach here until runBlocking completes")
 }
 
 fun launchUsingCoroutinePrimitive() {
