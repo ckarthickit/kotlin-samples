@@ -13,6 +13,7 @@
   - pipes
 
 - `Threads vs Coroutines`
+
   | Coroutine | Thread |
   | ---       | ---    |
   | Cooperatively multi-tasked | Preemptively multi-taskes |
@@ -192,7 +193,7 @@ Options to make CorotuineScope available for suspend functions :
 
 ## Channels
 
-- TODO
+- Provides a convenient way 
 
 ---
 
