@@ -151,6 +151,51 @@ Options to make CorotuineScope available for suspend functions :
 
 ---
 
+## Coroutine Cancellation and Timeouts
+
+ The [job][job] of a Coroutine can be used to __cancel the running-coroutine__.
+
+> Cancellation is `co-operative` in Coroutine world i.e., the runnig coroutine/job has to check for cancellation whenever it can.
+
+- __Methods to check for cancellation__
+    1. Periodically invoke a suspending function that checks for cancellation (`yied`, `delay`).
+        - All suspending functions inside `kotlinx.coroutines` package are __cancellable__.
+    2. Explicity check for cancellation status by invoking `CoroutineScope.isActive`.
+
+> If a co-routine is NOT active, we cannot invoke any __suspend functions__ on it. Doing so will result in `CancellationException`.
+
+- __Finally block after cancellation__
+  - `finally` block is executed irrespecitve of co-routine's `isActive` state.
+  - To __call suspend functions__ in `finally` block of a __cancelled co-routine__, we need to wrap the corresponding code in `withContext(NonCancellable)`.
+    - NonCancellable is a singleton `object NonCancellable`.
+
+    ```kotlin
+        scope.launch(CoroutineName("launchAJob")) {
+            try {
+                repeat(1000) { index ->
+                    println("job: I'm sleeping $index ... ${getContext()}")
+                    delay(500L)
+                }
+            } finally {
+                withContext(NonCancellable) {
+                    println("job: I'm running finally ${getContext()}")
+                    delay(1000L)
+                    println("job: And I've just delayed for 1 sec because I'm non-cancellable ${getContext()}")
+                }
+            }
+        }
+    ```
+
+- __Timeout for Co-Routines__
+  - `withTimeout` cancells the wrapping-coroutine/job (TimeoutCoroutine) after a passed __time-out__ and raised a `TimeoutCancellationException`.
+  - `withTimeoutOrNull` __returns null__ on timeout instead of raising an exception.
+
+## Channels
+
+- TODO
+
+---
+
 ## References
 
 - [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
