@@ -4,4 +4,4 @@ out/
 
 # Gradle 
 .gradle/
-/build/
+**/build/**
