@@ -119,6 +119,81 @@
 
 ---
 
+## Idea of Coroutine Implementation
+
+> The following code snippet will give us an idea of how Coroutine is __scoped__ and how __co-routine builders__ are constructed.
+
+```kotlin
+fun main() {
+    runBlocking {
+        println("class = ${this::class}")
+        launch {
+            println("class = ${this::class}")
+        }
+        val job = async {
+            println("class = ${this::class}")
+
+        }
+        job.await()
+    }
+
+}
+
+interface CoroutineScope {
+    val context: Any?
+}
+interface Job{
+
+}
+interface Deferred : Job {
+    fun await()
+}
+
+//Every concretet Coroutine object implements(is-a) CoroutineScope , a Job and a Continuation
+abstract class AbstractCoroutine(context: Any? = null) : CoroutineScope, Job {
+    override val context: Any? = context
+}
+
+internal class BlockingCoroutine(context: Any? = null): AbstractCoroutine(context)
+internal class StandaloneCoroutine(context: Any? = null) : AbstractCoroutine(context)
+internal class DeferredCoroutine(context: Any? = null): AbstractCoroutine(context), Deferred {
+    override fun await() {
+        println("fake await")
+    }
+}
+
+
+//runBlocking is the only co-routine builder that is not an extension of CoroutineScope.
+fun <T> runBlocking(block: CoroutineScope.() -> T) : T {
+    val reciever = BlockingCoroutine()
+    return block(reciever)
+}
+
+
+fun CoroutineScope.launch(block: CoroutineScope.() -> Unit): Job {
+    val reciever = StandaloneCoroutine()
+    reciever.block()
+    //block(reciever)
+    return reciever
+}
+
+fun CoroutineScope.async(block: CoroutineScope.() -> Unit): Deferred {
+    val reciever = DeferredCoroutine()
+    //reciever.block()
+    block(reciever)
+    return reciever
+}
+```
+
+If run, the above code will print
+
+> class = class com.ckarthickit.BlockingCoroutine (Kotlin reflection is not available)  
+> class = class com.ckarthickit.StandaloneCoroutine (Kotlin reflection is not available)  
+> class = class com.ckarthickit.DeferredCoroutine (Kotlin reflection is not available)  
+> fake await
+
+---
+
 ## Extracting functionality into Suspending Functions
 
 Functionality inside a coroutine can be `extracted into a seperate suspend function`.
@@ -191,9 +266,18 @@ Options to make CorotuineScope available for suspend functions :
   - `withTimeout` cancells the wrapping-coroutine/job (TimeoutCoroutine) after a passed __time-out__ and raised a `TimeoutCancellationException`.
   - `withTimeoutOrNull` __returns null__ on timeout instead of raising an exception.
 
+---
+
 ## Channels
 
-- Provides a convenient way 
+- Provides a convenient way to `transfer a stream of values` __between coroutines__, as opposed to `Deferred` which provides a convenient way to transfer a single value between coroutines.
+- `Channel` and `BlockingQueue` are __Conceptually Similar__.
+  
+  | Channels | Blocking Queue |
+  | ---      | --             |
+  | Suspending [send][SendChannel.send] | blocking `put` |
+  | Suspending [recieve][RecieveChannel.receive] | blocking `take` |
+  | __Can be closed__ to indicate no more elements are coming | No such option |
 
 ---
 
@@ -220,3 +304,6 @@ Options to make CorotuineScope available for suspend functions :
 [supervisor_scope]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/supervisor-scope.html
 
 [Dispatchers]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/index.html
+
+[SendChannel.send]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-send-channel/send.html
+[RecieveChannel.receive]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/receive.html
