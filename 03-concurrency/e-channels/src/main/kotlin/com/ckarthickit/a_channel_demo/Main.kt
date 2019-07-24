@@ -13,14 +13,14 @@ fun main() = runBlocking {
 
 suspend fun CoroutineScope.produceAndConsumeUsingReceive() {
     val channel: Channel<Int> = Channel()
-    println("======produceAndConsumeUsingReceive========")
+    println("-----produceAndConsumeUsingReceive-----")
     produceValues(channel)
     consumeValuesUsingReceive(channel)
 
 }
 
 suspend fun CoroutineScope.produceAndConsumeUsingIterator() {
-    println("======produceAndConsumeUsingIterator========")
+    println("-----produceAndConsumeUsingIterator-----")
     val channel: Channel<Int> = Channel()
     produceValues(channel)
     consumeValuesUsingIterator(channel)
@@ -29,6 +29,7 @@ suspend fun CoroutineScope.produceAndConsumeUsingIterator() {
 suspend fun CoroutineScope.produceValues(channel: Channel<Int>) {
     launch {
         for (x in 1..5) {
+            println("sending.. $x")
             channel.send(x)
         }
         channel.close()

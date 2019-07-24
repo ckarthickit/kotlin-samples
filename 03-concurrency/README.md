@@ -279,6 +279,12 @@ Options to make CorotuineScope available for suspend functions :
   | Suspending [recieve][RecieveChannel.receive] | blocking `take` |
   | __Can be closed__ to indicate no more elements are coming | No such option |
 
+- __Producer-Consumer__ using Channels
+  - Can use `class Channel`'s  __send__ and __recieve__  methods in different co-routines
+  - Can create `ProducerCoroutine` using `CoroutineScope.produce` builder and start `consume` from the caller co-routine.
+- __Pipeline__ using Channels
+  - A __Pattern__ where one coroutine is producing (possiblly infinite) stream of values and another coroutine (or) coroutines are __consuming__ the stream doing some __processing__ and producing some __other results__.
+
 ---
 
 ## References
