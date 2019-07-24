@@ -1,4 +1,4 @@
-package com.ckarthickit.launch
+package com.ckarthickit.a_launch
 
 import kotlin.concurrent.thread
 import kotlin.coroutines.*

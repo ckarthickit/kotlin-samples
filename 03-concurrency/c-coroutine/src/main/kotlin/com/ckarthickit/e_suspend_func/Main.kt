@@ -1,4 +1,4 @@
-package com.ckarthickit.suspend_func
+package com.ckarthickit.e_suspend_func
 
 import kotlinx.coroutines.*
 import kotlin.coroutines.EmptyCoroutineContext
@@ -22,18 +22,18 @@ suspend fun doSomeWork() {
 suspend fun doAnotherWork(scope: CoroutineScope) {
     delay(100)
     scope.launch {
-        println("doAnotherWork-launch-start ${getContext()}")
+        println("doAnotherWork-a_launch-start ${getContext()}")
         delay(500)
-        println("doAnotherWork-launch-end ${getContext()}")
+        println("doAnotherWork-a_launch-end ${getContext()}")
     }
 }
 
 suspend fun CoroutineScope.doSomeWorkInAnotherCoRoutineOnCurrentScope() {
     println("doSomeWorkInAnotherCoRoutineOnCurrentScope-start")
     launch {
-        println("doSomeWorkInAnotherCoRoutineOnCurrentScope-launch-start ${getContext()}")
+        println("doSomeWorkInAnotherCoRoutineOnCurrentScope-a_launch-start ${getContext()}")
         delay(500)
-        println("doSomeWorkInAnotherCoRoutineOnCurrentScope-launch-end ${getContext()}")
+        println("doSomeWorkInAnotherCoRoutineOnCurrentScope-a_launch-end ${getContext()}")
     }
     println("doSomeWorkInAnotherCoRoutineOnCurrentScope-end")
 }
@@ -65,11 +65,11 @@ class MyActivity {
 
 
     private suspend fun doSomeWork() {
-        println("MyActivity.doSomeAsyncWork-launch-start ${getContext()}")
+        println("MyActivity.doSomeAsyncWork-a_launch-start ${getContext()}")
         delay(200)
-        println("MyActivity.doSomeAsyncWork-launch-mid ${getContext()}")
+        println("MyActivity.doSomeAsyncWork-a_launch-mid ${getContext()}")
         delay(500)
-        println("MyActivity.doSomeAsyncWork-launch-end ${getContext()}")
+        println("MyActivity.doSomeAsyncWork-a_launch-end ${getContext()}")
     }
 
     fun cancelAll() {
@@ -88,11 +88,11 @@ class MyActivity2: CoroutineScope by CoroutineScope(EmptyCoroutineContext + Disp
 
 
     private suspend fun doSomeWork() {
-        println("MyActivity2.doSomeAsyncWork-launch-start ${getContext()}")
+        println("MyActivity2.doSomeAsyncWork-a_launch-start ${getContext()}")
         delay(200)
-        println("MyActivity2.doSomeAsyncWork-launch-mid ${getContext()}")
+        println("MyActivity2.doSomeAsyncWork-a_launch-mid ${getContext()}")
         delay(500)
-        println("MyActivity2.doSomeAsyncWork-launch-end ${getContext()}")
+        println("MyActivity2.doSomeAsyncWork-a_launch-end ${getContext()}")
     }
 
     fun cancelAll() {

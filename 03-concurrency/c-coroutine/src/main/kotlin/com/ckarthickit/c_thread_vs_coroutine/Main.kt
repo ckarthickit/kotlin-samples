@@ -1,8 +1,7 @@
-package com.ckarthickit.thread_vs_coroutine
+package com.ckarthickit.c_thread_vs_coroutine
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.awt.SystemColor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.concurrent.thread
