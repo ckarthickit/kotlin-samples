@@ -278,13 +278,74 @@ Options to make CorotuineScope available for suspend functions :
   | Suspending [send][SendChannel.send] | blocking `put` |
   | Suspending [recieve][RecieveChannel.receive] | blocking `take` |
   | __Can be closed__ to indicate no more elements are coming | No such option |
+  
+- Using `send` and `recieve`
 
-- __Producer-Consumer__ using Channels
+  ```kotlin
+    val channel = Channel<Int>()
+    launch {
+        // this might be heavy CPU-consuming computation or async logic, we'll just send five squares
+        for (x in 1..5) channel.send(x * x)
+    }
+    // here we print five received integers: in the outer coroutine
+    repeat(5) { println(channel.receive()) }
+    println("Done!")
+  ```
+
+> Output:  
+  1  
+  4  
+  9  
+  16  
+  25  
+  Done!
+
+- __Channels are fair__, meaning the first co-routine to invoke receive gets the element (FIFO order).
+- __Ticker channel__ is a special rendezvous channel that `produces Unit` every time given delay passes __since last consumption from this channel.__
+
+### Iterating + Closing Channels 
+
+- `ReceiveChannel` has an __iterator operator function__ and hence can be used in __for-loops__
+
+  ```kotlin
+    public interface ReceiveChannel<out E> {
+      public operator fun iterator(): ChannelIterator<E>
+    }
+  ```
+
+- [SendChannel.close][SendChannel.close] - Closes this channel for both sending and receiving.
+  - __SendChannel.isClosedForSend__ starts returning true immediately after `close`.
+  - __ReceiveChannel.isClosedForReceive__ starts returning true immediately after `close`
+    - Any iteration done will be stopped 
+    - Subsequent `receive` will throw `ClosedReceiveChannelException`.
+  - __close__ without a cause throws `ClosedSendChannelException` on both __send__ and __receive??__
+  - __close__ with a `non-null` cause is considered Failed channel and that cause will be thrown on subsequence __send__ or __receive__.
+
+### Producer-Consumer using Channels
   - Can use `class Channel`'s  __send__ and __recieve__  methods in different co-routines
   - Can create `ProducerCoroutine` using `CoroutineScope.produce` builder and start `consume` from the caller co-routine.
-- __Pipeline__ using Channels
-  - A __Pattern__ where one coroutine is producing (possiblly infinite) stream of values and another coroutine (or) coroutines are __consuming__ the stream doing some __processing__ and producing some __other results__.
 
+### Pipeline using Channels
+  - A __Pattern__ where one coroutine is producing (possibly infinite) stream of values and another coroutine (or) coroutines are __consuming__ the stream doing some __processing__ and producing some __other results__.
+  
+### Fan-Out & Fan-In
+  - `Fan-Out`:  Multiple co-routines might receive from same producer channel distributing work among themselves
+  - `Fan-In`: Multiple co-routines might send to same consumer channel
+
+### Buffered Channels
+  - Non-Buffered / Rendezvous Channels - send will suspend if invoked first (before receive) and receive will suspend if invoked first (before send)
+  - __Buffered Channels__ can be created with __optional capacity__ parameter (to specify buffer size)
+    - senders send multiple elements before suspending.
+    
+## Composing Suspending Functions
+
+## Coroutine Context and Dispatchers
+
+## Exception Handling
+
+## Select Expression
+
+## Shared Mutable State and Concurrency
 ---
 
 ## References
@@ -312,4 +373,5 @@ Options to make CorotuineScope available for suspend functions :
 [Dispatchers]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/index.html
 
 [SendChannel.send]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-send-channel/send.html
+[SendChannel.close]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-send-channel/close.html
 [RecieveChannel.receive]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/receive.html
